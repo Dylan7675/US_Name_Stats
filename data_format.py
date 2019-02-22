@@ -15,7 +15,7 @@ and converts them from .txt to .csv"""
             year = base[3:]
 
             with open(file, 'r') as f_in: #line[:-1] because of a carriage return as last value of line
-                data = [ line[:-1] + (",%s" %year)) for line in f_in]
+                data = [ line[:-1] + (",%s" %year) for line in f_in]
             with open(file, 'w') as f_out:
                 f_out.write("%s\n" %header)
                 for entry in data: f_out.write("%s\n" % entry)
