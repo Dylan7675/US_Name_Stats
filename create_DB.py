@@ -16,6 +16,8 @@ def main():
 
 def create_db(name_dic):
 
+    total_keys  = len(name_dic.keys())
+
     engine = create_engine("mysql+pymysql://USER:PASSWORD@localhost/DB", echo=False)
     connection = engine.connect()
     metadata = MetaData(engine)
@@ -30,7 +32,7 @@ def create_db(name_dic):
 
     for progress,key in enumerate(name_dic.keys(),1):
 
-        update_progress(progress/len(name_dic.keys()))
+        update_progress(progress/total_keys)
 
         name_dic[key].to_sql(key, con=engine, if_exists='replace')
         ins = names.insert().values(name=key)
@@ -67,7 +69,7 @@ def csv_to_DataFrame():
                 else:
                     name_dic[key] = pd.concat([name_dic[key], tempdf], ignore_index = True)
 
-        print("Done loading DataFrames")
+    print("Done loading DataFrames")
 
     return(name_dic)
 
