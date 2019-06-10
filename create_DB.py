@@ -5,6 +5,7 @@ import pandas as pd
 import time
 import sqlalchemy
 from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, ForeignKey
+from sqlalchemy.exc import SQLAlchemyError
 import sys
 
 def main():
@@ -16,28 +17,48 @@ def main():
 
 def create_db(name_dic):
 
+    year_list = [i for i in range(1880,2018)]
+
     total_keys  = len(name_dic.keys())
+    total_years = len(year_list)
+
 
     engine = create_engine("mysql+pymysql://USER:PASSWORD@localhost/DB", echo=False)
     connection = engine.connect()
     metadata = MetaData(engine)
 
-    names =  Table('Names', metadata,
-             Column('id', Integer, primary_key=True),
-             Column('name', String(30)))
+    name_table =  Table('Names', metadata,
+                  Column('id', Integer, primary_key=True),
+                  Column('name', String(30)))
+
+    year_table =  Table('Years', metadata,
+                  Column('id', Integer, primary_key=True),
+                  Column('year', Integer))
 
     metadata.create_all(engine)
 
-    print("Loading DataFrames to Database")
+    print("Loading DataFrames to Database Tables")
 
-    for progress,key in enumerate(name_dic.keys(),1):
+    for progress,k in enumerate(name_dic.keys(), 1):
+
+        try:
+            name_dic[k].to_sql(k, con=engine, if_exists='replace')
+        except SQLAlchemyError as e:
+            print("****Couldn't insert {0} table. Investigate!****".format(k))
+
+        ins = name_table.insert().values(name=k)
+        connection.execute(ins)
+        time.sleep(1)
 
         update_progress(progress/total_keys)
 
-        name_dic[key].to_sql(key, con=engine, if_exists='replace')
-        ins = names.insert().values(name=key)
-        connection.execute(ins)
+    print("Loading Years to Year table")
 
+    for progress, y in enumerate(year_list, 1):
+
+        ins = year_table.insert().values(year=y)
+        connection.execute(ins)
+        update_progress(progress/total_years)
 
     connection.close()
 
@@ -75,7 +96,7 @@ def csv_to_DataFrame():
 
 
 def update_progress(progress):
-    barLength = 20
+    bar_length = 20
     status = ""
     if isinstance(progress, int):
         progress = float(progress)
@@ -88,8 +109,8 @@ def update_progress(progress):
     if progress >= 1:
         progress = 1
         status = "Done...\r\n"
-    block = int(round(barLength*progress))
-    text = "\rPercent: [{0}] {1}% {2}".format( "#"*block + "-"*(barLength-block), progress*100, status)
+    block = int(round(bar_length*progress))
+    text = "\rPercent: [{0}] {1}% {2}".format( "#"*block + "-"*(bar_length-block), progress*100, status)
     sys.stdout.write(text)
     sys.stdout.flush()
 
