@@ -7,6 +7,7 @@ import sqlalchemy
 from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, ForeignKey
 from sqlalchemy import exc
 import sys
+from connector import connect
 
 def main():
 
@@ -22,10 +23,8 @@ def create_db(name_dic):
     total_keys  = len(name_dic.keys())
     total_years = len(year_list)
 
-    engine = create_engine("mysql+pymysql://USER:PASSWORD@localhost/DB", echo=False)
-    connection = engine.connect()
-    metadata = MetaData(engine)
-    metadata.reflect(engine)
+    connection, metadata, engine = connect()
+
     db_tables = set(metadata.tables.keys())
 
     if "Names" in db_tables:
