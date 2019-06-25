@@ -12,7 +12,6 @@ def connect():
 
     connection = engine.connect()
     metadata = MetaData(engine)
-    metadata.reflect(engine)
 
     return(connection, metadata, engine)
 
