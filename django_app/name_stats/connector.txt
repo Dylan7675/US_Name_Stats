@@ -1,0 +1,22 @@
+"""This is an example of the method used for my connecter script. Replace the DB credentials to
+match your requirements. This script is meant for connecting to the database and passing
+back the connection and the MetaData """
+
+from sqlalchemy import create_engine, MetaData
+
+
+def connect():
+    """connects to db and returns connection, MetaData """
+    engine = create_engine("mysql+pymysql://USER:PASSWORD@localhost/DB",
+        echo=False)
+
+    connection = engine.connect()
+    metadata = MetaData(engine)
+
+    return(connection, metadata, engine)
+
+
+
+if __name__ == "__main__":
+    main()
+
