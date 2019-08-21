@@ -8,15 +8,16 @@ from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, 
 from sqlalchemy import exc
 import sys
 from connector import connect
+from progress_bar import update_progress
 
 def main():
 
     name_dic = csv_to_DataFrame()
 
-    create_db(name_dic)
+    upload(name_dic)
 
 
-def create_db(name_dic):
+def upload(name_dic):
 
     year_list = [i for i in range(1880,2018)]
 
@@ -114,27 +115,6 @@ def csv_to_DataFrame():
     print("Done loading DataFrames")
 
     return(name_dic)
-
-
-def update_progress(progress):
-    bar_length = 20
-    status = ""
-    if isinstance(progress, int):
-        progress = float(progress)
-    if not isinstance(progress, float):
-        progress = 0
-        status = "error: progress var must be float\r\n"
-    if progress < 0:
-        progress = 0
-        status = "Halt...\r\n"
-    if progress >= 1:
-        progress = 1
-        status = "Done...\r\n"
-    block = int(round(bar_length*progress))
-    text = "\rPercent: [{0}] {1}% {2}".format( "#"*block + "-"*(bar_length-block), progress*100, status)
-    sys.stdout.write(text)
-    sys.stdout.flush()
-
 
 
 if __name__ == "__main__":

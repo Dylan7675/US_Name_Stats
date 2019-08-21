@@ -19,7 +19,6 @@ def plot(name, sex):
     plt = figure(title="Popularity Trend", x_axis_label='Year', y_axis_label="Quantity")
     plt.line(x,y, legend="Qty", line_width=2)
     save(plt)
-    os.chdir("../..")
 
     return(plt)
 
