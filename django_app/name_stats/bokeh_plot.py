@@ -6,13 +6,8 @@ import os
 
 def plot(name, sex):
 
-
     df, vals = query(name, sex)
 
-
-    os.chdir('name_stats/bokeh')
-
-    output_file("{0}-{1}.html".format(name, sex))
     x = df['Year']
     y = df['Qty']
 
