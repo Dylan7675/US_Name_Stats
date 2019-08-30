@@ -75,10 +75,7 @@
 
     clear: both;
     width: 100%;
-    margin: 0 auto;
-    /*display: inline-block;*/
-    text-align: center;
-    width: 600px;
+    padding-left: 8%;
     font-family: 'Lora';
     font-size: 20pt;
     padding-top: 5%;

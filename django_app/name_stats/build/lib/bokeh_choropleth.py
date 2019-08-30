@@ -54,11 +54,8 @@ def main():
 
     years = [i for i in range(1910, 2018)]
 
-    if "HI" in us_states.keys():
-        del us_states["HI"]
-
-    if "AK" in us_states.keys():
-        del us_states["AK"]
+    del us_states["HI"]
+    del us_states["AK"]
 
     state_xs = [us_states[code]["lons"] for code in us_states]
     state_ys = [us_states[code]["lats"] for code in us_states]
@@ -146,5 +143,6 @@ def main():
     layout = row(pop_plt, column(choro_plt, widgetbox(year_slider)))
 
     curdoc().add_root(layout)
+
 
 main()
