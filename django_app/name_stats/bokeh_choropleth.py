@@ -22,25 +22,29 @@ def main():
        Once data is formatted, build the model and add labels"""
 
     pop_df, vals = query_popularity(name, sex)
-    x = pop_df['Year']
-    y = pop_df['Qty']
 
-    circ_data=dict(
-        year=[x[0]],
-        qty=[y[0]]
+    line_data = dict(
+        x=pop_df['Year'],
+        y=pop_df['Qty']
+    )
+
+    circ_data = dict(
+        year=[line_data['x'][0]],
+        qty=[line_data['y'][0]]
     )
 
     label_data = dict(
-        year=[x[0]],
-        qty=[y[0]],
-        value=[str(y[0])]
+        year=circ_data['year'],
+        qty=circ_data['qty'],
+        value=[str(circ_data['qty'][0])]
     )
 
+    line_source = ColumnDataSource(line_data)
     circ_source = ColumnDataSource(circ_data)
     label_source = ColumnDataSource(label_data)
 
     pop_plt = figure(title="Popularity Trend", x_axis_label='Year', y_axis_label="Quantity")
-    pop_plt.line(x, y, legend="Qty", line_width=2)
+    pop_plt.line('x', 'y', source=line_source, legend="Qty", line_width=2)
     pop_plt.circle('year', 'qty', source=circ_source, size=14, color="navy", alpha=0.5)
     labels = LabelSet(x='year', y='qty', text='value',
                       level='glyph', x_offset=5, y_offset=5, source=label_source)
@@ -110,14 +114,14 @@ def main():
         yr = str(year_slider.value)
 
         #x is a pandas series
-        xlist = x.tolist()
+        xlist = line_data['x'].tolist()
 
         # x~year y~qty
         if year_slider.value in xlist:
 
             new_circ_data = dict(
-                year=[x[xlist.index(year_slider.value)]],
-                qty=[y[xlist.index(year_slider.value)]]
+                year=[line_data['x'][xlist.index(year_slider.value)]],
+                qty=[line_data['y'][xlist.index(year_slider.value)]]
             )
 
             new_label_data = dict(
