@@ -1,7 +1,8 @@
 import pandas as pd
 from collections import OrderedDict
-from bokeh_helpers import query_popularity, build_matrix, build_state_name_df
+from bokeh_helpers import query_popularity, build_matrix, build_state_name_df, check_tables
 import os
+from validators import name_validation
 from connector import connect
 from bokeh.server.server import Server
 from bokeh.sampledata.us_states import data as us_states
@@ -39,7 +40,7 @@ def main():
     name_field = TextInput(value="", title="Name")
     sex_selection = RadioGroup(
         labels=["Male", "Female"], active=0)
-    sub_button = Button(label="Submit", button_type="success")
+    sub_button = Button(label="Submit", button_type="success", disabled=False)
     directions = Paragraph(text="""Type in any name and select the sex you would like to query.
         Then press Submit to display your results.""",
               width=250, height=60)
@@ -115,17 +116,28 @@ def main():
         data_sources['choropleth_source'].data = choro_data
 
     def text_input_handler(attr, old, new):
-        #data cleanse
-        name = str(new)
-        #check if name exists in DB
 
-        new_query_data = dict(
-            name=[name],
-            sex=[data_sources["query_source"].data["sex"][0]]
-        )
+        new_name = new
 
-        query_data = ColumnDataSource(new_query_data)
-        data_sources['query_source'] = query_data
+        try:
+            name_validation(new_name)
+
+            try:
+                new_name = new_name.capitalize()
+                check_tables(new_name)
+
+                new_query_data = dict(
+                    name=[new_name],
+                    sex=[data_sources["query_source"].data["sex"][0]]
+                )
+                query_data = ColumnDataSource(new_query_data)
+                data_sources['query_source'] = query_data
+
+            except ValueError:
+                name_field.value = f"Sorry, {new_name} doesn't exist in the database"
+
+        except ValueError:
+            name_field.value = "Enter a name with valid letters only."
 
     def radio_handler(new):
         #value based on radio button index: 0-Male 1-Female
@@ -144,7 +156,8 @@ def main():
 
     def input_handler():
 
-        new_name = name_field.value
+        new_name = str(name_field.value).capitalize()
+
         if sex_selection.active == 0:
             new_sex = 'M'
         else:
@@ -165,12 +178,17 @@ def main():
         data_sources['line_source'].data = new_line_data
         xlist = data_sources['line_source'].data['x'].tolist()
 
+        if year_slider.value not in xlist:
 
-        #if year_slider.value not in line_source.... use index[0]
-        new_circ_data = dict(
-            year=[data_sources['line_source'].data['x'][xlist.index(year_slider.value)]],
-            qty=[data_sources['line_source'].data['y'][xlist.index(year_slider.value)]]
-        )
+            new_circ_data = dict(
+                year=[data_sources['line_source'].data['x'][0]],
+                qty=[data_sources['line_source'].data['y'][0]]
+            )
+        else:
+            new_circ_data = dict(
+                year=[data_sources['line_source'].data['x'][xlist.index(year_slider.value)]],
+                qty=[data_sources['line_source'].data['y'][xlist.index(year_slider.value)]]
+            )
 
         new_label_data = dict(
             year=new_circ_data['year'],
@@ -184,7 +202,6 @@ def main():
             state_names=states,
             rate=data_dict['matrix'][str(year_slider.value)]
         )
-
 
         data_sources['circ_source'].data = new_circ_data
         data_sources['label_source'].data = new_label_data

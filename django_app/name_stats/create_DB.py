@@ -21,7 +21,7 @@ def upload(name_dic):
 
     year_list = [i for i in range(1880,2018)]
 
-    total_keys  = len(name_dic.keys())
+    total_keys = len(name_dic.keys())
     total_years = len(year_list)
 
     connection, metadata, engine = connect()

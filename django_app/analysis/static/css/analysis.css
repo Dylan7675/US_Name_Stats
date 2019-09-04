@@ -59,7 +59,7 @@
 
 .page{
     height: 100%;
-    width: 90%;
+    width: 95%;
     padding-bottom: 5%;
     background-color: white;
     margin: 0 auto;
@@ -75,7 +75,6 @@
 
     clear: both;
     width: 100%;
-    padding-left: 8%;
     font-family: 'Lora';
     font-size: 20pt;
     padding-top: 5%;
@@ -101,4 +100,8 @@
     margin: 0 auto;
     width: 50%;
     padding-top: 10%;
+}
+
+.bk p{
+    font-size: 20pt;
 }

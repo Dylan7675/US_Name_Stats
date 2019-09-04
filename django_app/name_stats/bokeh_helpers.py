@@ -35,21 +35,20 @@ def build_state_name_df(name, sex):
        This function Queries the database and builds state dataframes with
        data regarding the Name and Sex input"""
 
-    connection, metadata, engine = connect()
+    conn_vars = connect_to_db()
     states = [file.split('.')[0] for file in os.listdir('./Names_By_State')]
-    #states = [file.split('.')[0] for file in os.listdir('/name_stats/Names_By_State')]
     name_by_state = OrderedDict()
 
     for state in states:
         # check if state exist in db
-        if not engine.dialect.has_table(engine, state):
+        if not conn_vars['engine'].dialect.has_table(conn_vars['engine'], state):
             raise ValueError(f"{state} not found in DB")
         else:
             query_db = f"Select * from `{state}` where " \
                        f"Name='{name}' AND " \
                        f"Sex='{sex}' " \
                        f"Order by Year"
-            temp_df = pd.read_sql(query_db, connection)
+            temp_df = pd.read_sql(query_db, conn_vars['connection'])
 
         if state not in name_by_state.keys():
             name_by_state[state] = temp_df
@@ -58,19 +57,39 @@ def build_state_name_df(name, sex):
 
 
 def query_popularity(name, sex):
-    """query() takes in the selections for Name and Sex as input and queries the Database. Returns the result of the query stored as a dataframe, and the Name that was queried"""
-    connection, metadata, engine = connect()
+    """query() takes in the selections for Name and Sex as input and queries the Database.
+    Returns the result of the query stored as a dataframe."""
+    conn_vars = connect_to_db()
 
     #check if name exist in db
-    if not engine.dialect.has_table(engine, name):
+    if not conn_vars['engine'].dialect.has_table(conn_vars['engine'], name):
         raise ValueError(f"{name} not found in DB")
     else:
         query_db = f"Select * from {name} where Sex='{sex}' order by {name}.Year"
-        df = pd.read_sql(query_db, connection)
+        df = pd.read_sql(query_db, conn_vars['connection'])
 
-    query_vals = dict([('name',name), ('sex',sex)])
+    return df
 
-    return(df, query_vals)
+def check_tables(name):
+
+    conn_vars = connect_to_db()
+    if not conn_vars['engine'].dialect.has_table(conn_vars['engine'], name):
+        raise ValueError(f"{name} not found in DB")
+
+    return
+
+
+def connect_to_db():
+
+    connection, metadata, engine = connect()
+
+    conn_vars = dict(
+        connection=connection,
+        metadata=metadata,
+        engine=engine
+    )
+
+    return conn_vars
 
 
 if __name__ == "__main__":
