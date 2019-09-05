@@ -67,6 +67,9 @@ def query_popularity(name, sex):
     else:
         query_db = f"Select * from {name} where Sex='{sex}' order by {name}.Year"
         df = pd.read_sql(query_db, conn_vars['connection'])
+        if df.empty:
+            null_data = [[0, 0, 0, 0], [0, 0, 0, 0]]
+            df = pd.DataFrame(null_data, columns=['index', 'Sex', 'Qty', 'Year'])
 
     return df
 

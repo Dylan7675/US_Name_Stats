@@ -19,21 +19,6 @@ def home(request):
 
     script = server_script
 
-    if request.method == 'POST':
-        form = AnalysisForm(request.POST)
-        if form.is_valid():
-
-            name = form.cleaned_data['name'].capitalize()
-            sex = form.cleaned_data['sex']
-            print(name, sex)
-
-            try:
-                print(name)
-                #call_back to update CDS with new name and sex data
-            except ValueError:
-                error = "Sorry! {name} does not exist in the database :("
-                return render(request, 'analysis/analysis.html', {'form': form,  'error': error})
-
     form = AnalysisForm
     return render(request, 'analysis/analysis.html', {'form': form, 'div': script})
 

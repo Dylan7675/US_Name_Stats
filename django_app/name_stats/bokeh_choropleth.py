@@ -72,8 +72,8 @@ def main():
                       line_color="white",
                       fill_alpha=.8, line_width=0.5)
 
-    year_slider = Slider(start=1910, end=2017,
-                         value=1910, step=1,
+    year_slider = Slider(start=1880, end=2017,
+                         value=1880, step=1,
                          title="Year")
 
     color_bar = ColorBar(color_mapper=color_mapper, ticker=LogTicker(),
@@ -154,7 +154,7 @@ def main():
         query_data = ColumnDataSource(new_query_data)
         data_sources['query_source'] = query_data
 
-    def input_handler():
+    def replot():
 
         new_name = str(name_field.value).capitalize()
 
@@ -211,7 +211,7 @@ def main():
     year_slider.on_change('value', slider_callback)
     sex_selection.on_click(radio_handler)
     name_field.on_change('value', text_input_handler)
-    sub_button.on_click(input_handler)
+    sub_button.on_click(replot)
 
     layout = row(column(directions, name_field, sex_selection, sub_button),
                  row(pop_plt, column(choro_plt, widgetbox(year_slider))))

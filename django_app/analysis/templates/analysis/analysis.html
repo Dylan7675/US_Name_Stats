@@ -23,18 +23,6 @@
     <h1>U.S. Name Trends</h1>
   </div>
   <div class="page">
-    <div class="input-area">
-      <div class="instructions">
-      Type in any valid name you and select the sex you would like to query.
-        Then press Submit to display your results. If the name doesn't exist in the database,
-        chances are its an invalid and you may try again. Characters such as (!@#$%)
-        are not acceptable either!
-      </div>
-      <div class="query-form"                                                                                                                                                                                                                     >
-      {% crispy form form.helper %}
-        </form>
-      </div>
-    </div>
     <div class="graph" onload="window.scrollTo(0,document.body.scrollHeight);">
       {{ div | safe }}
       {{ error | safe }}
