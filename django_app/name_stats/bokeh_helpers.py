@@ -93,18 +93,5 @@ def check_tables(name):
     return
 
 
-def connect_to_db():
-
-    connection, metadata, engine = connect()
-
-    conn_vars = dict(
-        connection=connection,
-        metadata=metadata,
-        engine=engine
-    )
-
-    return conn_vars
-
-
 if __name__ == "__main__":
     main()
