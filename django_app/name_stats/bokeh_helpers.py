@@ -6,6 +6,17 @@ from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, 
 from sqlalchemy.sql import select
 import os
 
+
+class Connection:
+
+    connection, metadata, engine = connect()
+
+    conn_vars = dict(
+        connection=connection,
+        metadata=metadata,
+        engine=engine
+    )
+
 def build_matrix(years, states, state_name_dfs):
     """Input: Year List, State List, DF from build_df
        Output: Returns an OrderedDict of qty's per state by year"""
@@ -35,7 +46,7 @@ def build_state_name_df(name, sex):
        This function Queries the database and builds state dataframes with
        data regarding the Name and Sex input"""
 
-    conn_vars = connect_to_db()
+    conn_vars = Connection.conn_vars
     states = [file.split('.')[0] for file in os.listdir('./Names_By_State')]
     name_by_state = OrderedDict()
 
@@ -59,7 +70,7 @@ def build_state_name_df(name, sex):
 def query_popularity(name, sex):
     """query() takes in the selections for Name and Sex as input and queries the Database.
     Returns the result of the query stored as a dataframe."""
-    conn_vars = connect_to_db()
+    conn_vars = Connection.conn_vars
 
     #check if name exist in db
     if not conn_vars['engine'].dialect.has_table(conn_vars['engine'], name):
@@ -75,7 +86,7 @@ def query_popularity(name, sex):
 
 def check_tables(name):
 
-    conn_vars = connect_to_db()
+    conn_vars = Connection.conn_vars
     if not conn_vars['engine'].dialect.has_table(conn_vars['engine'], name):
         raise ValueError(f"{name} not found in DB")
 
