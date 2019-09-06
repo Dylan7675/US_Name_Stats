@@ -2,19 +2,19 @@
  back the connection and the MetaData """
 
 from sqlalchemy import create_engine, MetaData
+import os
 
 
 def connect():
     """connects to db and returns connection, MetaData """
-    engine = create_engine("mysql+pymysql://admindrm:7259988Aa!!263Dy530aW?@localhost/US_Names",
-        echo=False)
+    user = os.environ['NAME_STAT_USER']
+    password = os.environ['NAME_STAT_PASS']
+    engine = create_engine(f"mysql+pymysql://{user}:{password}@localhost/US_Names", echo=False)
 
     connection = engine.connect()
     metadata = MetaData(engine)
-    # metadata.reflect(engine)
 
     return(connection, metadata, engine)
-
 
 
 if __name__ == "__main__":
