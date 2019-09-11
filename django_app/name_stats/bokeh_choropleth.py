@@ -19,7 +19,7 @@ def main():
     name = 'Dylan'
     sex = 'M'
 
-    years = [i for i in range(1910, 2018)]
+    years = [i for i in range(1880, 2018)]
 
     if "HI" in us_states.keys():
         del us_states["HI"]
@@ -117,7 +117,7 @@ def main():
 
     def text_input_handler(attr, old, new):
 
-        new_name = new
+        new_name = new.strip()
 
         try:
             name_validation(new_name)
@@ -156,7 +156,8 @@ def main():
 
     def replot():
 
-        new_name = str(name_field.value).capitalize()
+        new_name = str(name_field.value).strip()
+        new_name = new_name.capitalize()
 
         if sex_selection.active == 0:
             new_sex = 'M'
