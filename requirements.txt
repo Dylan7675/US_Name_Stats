@@ -1,4 +1,5 @@
-matplotlib
+bokeh
 numpy
 pandas
 sqlalchemy
+django
