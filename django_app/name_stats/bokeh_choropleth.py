@@ -16,8 +16,8 @@ from bokeh.io import curdoc
 
 
 def main():
-    name = 'Dylan'
-    sex = 'M'
+    name = ''
+    sex = ''
 
     years = [i for i in range(1880, 2018)]
 
