@@ -35,6 +35,7 @@ def upload(state_dic):
             print("****Couldn't insert {0} table. Investigate!****".format(k))
 
         update_progress(progress/total_states)
+        state_dic[k] = ''
 
     print("Done uploading state DataFrames to the Database")
 

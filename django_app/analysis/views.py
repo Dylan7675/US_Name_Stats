@@ -9,7 +9,7 @@ from bokeh.client import pull_session
 from bokeh.embed import server_session
 
 
-def home(request):
+def choropleth(request):
 
     #pull the session from the actively running bokeh app
     app_url = "http://localhost:5600/bokeh_choropleth"
@@ -26,3 +26,7 @@ def home(request):
 def about(request):
 
     return render(request, 'analysis/about-project.html')
+
+def home(request):
+
+    return render(request, 'analysis/home.html')

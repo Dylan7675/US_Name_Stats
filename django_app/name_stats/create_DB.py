@@ -69,6 +69,7 @@ def upload(name_dic):
         connection.execute(ins)
 
         update_progress(progress/total_keys)
+        name_dic[k] = ''
 
     print("Loading Years to Year table")
 
