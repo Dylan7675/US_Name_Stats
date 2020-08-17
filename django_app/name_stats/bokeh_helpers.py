@@ -21,7 +21,7 @@ def build_matrix(years, states, state_name_dfs):
     """Input: Year List, State List, DF from build_df
        Output: Returns an OrderedDict of qty's per state by year"""
 
-    qty_by_state = []
+    qty_by_state = list()
     matrix = OrderedDict()
     for year in years:
 
@@ -73,14 +73,18 @@ def query_popularity(name, sex):
     conn_vars = Connection.conn_vars
 
     #check if name exist in db
-    if not conn_vars['engine'].dialect.has_table(conn_vars['engine'], name):
-        raise ValueError(f"{name} not found in DB")
-    else:
-        query_db = f"Select * from {name} where Sex='{sex}' order by {name}.Year"
-        df = pd.read_sql(query_db, conn_vars['connection'])
-        if df.empty:
-            null_data = [[0, 0, 0, 0], [0, 0, 0, 0]]
-            df = pd.DataFrame(null_data, columns=['index', 'Sex', 'Qty', 'Year'])
+    try:
+        if not conn_vars['engine'].dialect.has_table(conn_vars['engine'], name):
+            raise ValueError(f"{name} not found in DB")
+        else:
+            query_db = f"Select * from {name} where Sex='{sex}' order by {name}.Year"
+            df = pd.read_sql(query_db, conn_vars['connection'])
+            if df.empty:
+                null_data = [[0, 0, 0, 0], [0, 0, 0, 0]]
+                df = pd.DataFrame(null_data, columns=['index', 'Sex', 'Qty', 'Year'])
+    except sqlalchemy.exc.ProgrammingError:
+        null_data = [[0, 0, 0, 0], [0, 0, 0, 0]]
+        df = pd.DataFrame(null_data, columns=['index', 'Sex', 'Qty', 'Year'])
 
     return df
 
